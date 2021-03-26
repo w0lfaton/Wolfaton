@@ -3,6 +3,8 @@ package com.Wolfaton.game;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWKeyCallback;
 import org.lwjgl.glfw.GLFWVidMode;
+import org.lwjgl.opengl.GL;
+import org.lwjgl.opengl.GLCapabilities;
 import org.lwjgl.system.MemoryStack;
 
 import java.nio.IntBuffer;
@@ -37,17 +39,35 @@ public class Window {
     }
 
     private void init() {
-        // Setup an error callback. Current implementation
-        // will print the error message in System.err.
-        glfwSetErrorCallback(errorCallback);
-
         // Initialize GLFW. Most GLFW functions will not work before doing this - good to know, aye.
         if (!glfwInit()) throw new IllegalStateException("Unable to initialize GLFW");
 
-        // Configure GLFW
-        glfwDefaultWindowHints(); // optional, the current window hints are already the default
-        glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE); // the window will stay hidden after creation
-        glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); // the window will be resizable
+        /* Temporary window for GL version */
+        glfwDefaultWindowHints();
+        glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
+        long temp = glfwCreateWindow(1, 1, "loading..", NULL, NULL);
+        glfwMakeContextCurrent(temp);
+        GL.createCapabilities();
+        GLCapabilities caps = GL.getCapabilities();
+        glfwDestroyWindow(temp);
+
+        /* Reset and set window hints */
+        glfwDefaultWindowHints();
+        if (caps.OpenGL32) {
+            /* Hints for OpenGL 3.2 core profile */
+            glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+            glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+            glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+            glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
+        } else if (caps.OpenGL21) {
+            /* Hints for legacy OpenGL 2.1 */
+            glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
+            glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+        } else {
+            throw new RuntimeException("Neither OpenGL 3.2 nor OpenGL 2.1 is "
+                    + "supported, you may want to update your graphics driver.");
+        }
+        glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 
         // Create the window
         windowHandle = glfwCreateWindow(this.width, this.height, this.title, NULL, NULL);
@@ -58,8 +78,6 @@ public class Window {
             Window.this.height = height;
             Window.this.setResized(true);
         });
-
-        glfwSetKeyCallback(windowHandle, keyCallback);
 
         // Get the thread stack and push a new frame
         try (MemoryStack stack = stackPush()) {
@@ -82,11 +100,18 @@ public class Window {
 
         // Make the OpenGL context current
         glfwMakeContextCurrent(windowHandle);
+        GL.createCapabilities();
+
+        // Setup an error callback. Current implementation
+        // will print the error message in System.err.
+        glfwSetErrorCallback(errorCallback);
 
         // Enable v-sync
         if (vSync) {
             glfwSwapInterval(1);
         }
+
+        glfwSetKeyCallback(windowHandle, keyCallback);
 
         // Make the window visible
         glfwShowWindow(windowHandle);

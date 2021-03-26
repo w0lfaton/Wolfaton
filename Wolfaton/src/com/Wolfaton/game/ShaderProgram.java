@@ -1,5 +1,9 @@
 package com.Wolfaton.game;
 
+import org.lwjgl.system.MemoryStack;
+
+import java.nio.FloatBuffer;
+
 import static org.lwjgl.opengl.GL30C.*;
 
 public class ShaderProgram {
@@ -13,8 +17,12 @@ public class ShaderProgram {
         }
     }
 
+    public int getObjectId() {
+        return objectId;
+    }
+
     public void attachShader(Shader shader) {
-        glAttachShader(objectId, shader.getId());
+        glAttachShader(objectId, shader.getObjectId());
     }
 
     public int getAttributeLocation(CharSequence name) {
@@ -25,16 +33,12 @@ public class ShaderProgram {
         glEnableVertexAttribArray(location);
     }
 
-    public void disableVertexAttribute(int location) {
-        glDisableVertexAttribArray(location);
-    }
-
     public void pointVertexAttribute(int location, int size, int stride, int offset) {
         glVertexAttribPointer(location, size, GL_FLOAT, false, stride, offset);
     }
 
-    public int getUniformLocation(CharSequence name) {
-        return glGetUniformLocation(objectId, name);
+    public void disableVertexAttribute(int location) {
+        glDisableVertexAttribArray(location);
     }
 
     public void link() throws Exception {
@@ -58,6 +62,30 @@ public class ShaderProgram {
         int status = glGetProgrami(objectId, GL_LINK_STATUS);
         if (status != GL_TRUE) {
             throw new RuntimeException(glGetProgramInfoLog(objectId));
+        }
+    }
+
+    public int getUniformLocation(CharSequence name) {
+        return glGetUniformLocation(objectId, name);
+    }
+
+    public void setUniform(int location, int value) {
+        glUniform1i(location, value);
+    }
+
+    public void setUniform(int location, Vector4 value) {
+        try (MemoryStack stack = MemoryStack.stackPush()) {
+            FloatBuffer buffer = stack.mallocFloat(4);
+            value.toBuffer(buffer);
+            glUniform4fv(location, buffer);
+        }
+    }
+
+    public void setUniform(int location, Matrix4 value) {
+        try (MemoryStack stack = MemoryStack.stackPush()) {
+            FloatBuffer buffer = stack.mallocFloat(4 * 4);
+            value.toBuffer(buffer);
+            glUniformMatrix4fv(location, false, buffer);
         }
     }
 

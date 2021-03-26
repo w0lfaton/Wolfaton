@@ -5,33 +5,33 @@ import java.io.*;
 import static org.lwjgl.opengl.GL30C.*;
 
 public class Shader {
-    private final int id;
+    private final int objectId;
 
     public Shader(int type) {
-        id = glCreateShader(type);
+        objectId = glCreateShader(type);
     }
 
-    public int getId() {
-        return id;
+    public int getObjectId() {
+        return objectId;
     }
 
     public void delete() {
-        glDeleteShader(id);
+        glDeleteShader(objectId);
     }
 
     public void source(CharSequence source) {
-        glShaderSource(id, source);
+        glShaderSource(objectId, source);
     }
 
     public void compile() {
-        glCompileShader(id);
+        glCompileShader(objectId);
         checkStatus();
     }
 
     private void checkStatus() {
-        int status = glGetShaderi(id, GL_COMPILE_STATUS);
+        int status = glGetShaderi(objectId, GL_COMPILE_STATUS);
         if (status != GL_TRUE) {
-            throw new RuntimeException(glGetShaderInfoLog(id));
+            throw new RuntimeException(glGetShaderInfoLog(objectId));
         }
     }
 

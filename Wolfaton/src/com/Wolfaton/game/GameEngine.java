@@ -6,6 +6,7 @@ import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL30C.*;
 
 public class GameEngine implements Runnable {
+    private Renderer renderer;
     private Window window;
     private final Thread gameLoopThread;
     private final GameContainerInterface gameContainer;
@@ -13,6 +14,7 @@ public class GameEngine implements Runnable {
 
     public GameEngine(String windowTitle, int width, int height, boolean vsSync, GameContainerInterface gameContainer) throws Exception {
         gameLoopThread = new Thread(this, "GAME_LOOP_THREAD");
+        renderer = new Renderer();
         window = new Window(windowTitle, width, height, vsSync);
         this.gameContainer = gameContainer;
         timer = new Timer();
@@ -23,18 +25,14 @@ public class GameEngine implements Runnable {
         gameLoopThread.start();
     }
 
-    private void init() {
+    private void init() throws Exception {
         timer.init();
+        renderer.init();
+        gameContainer.init();
     }
 
     private void gameLoop() {
-        // This line is critical for LWJGL's interoperation with GLFW's
-        // OpenGL context, or any context that is managed externally.
-        // LWJGL detects the context that is current in the current thread,
-        // creates the GLCapabilities instance and makes the OpenGL
-        // bindings available for use.
-        GL.createCapabilities();
-
+        clear();
         // Set the clear color
         glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
         // Run the rendering loop until the user has attempted to close
@@ -70,11 +68,11 @@ public class GameEngine implements Runnable {
     protected void render() {
         gameContainer.render(window);
         timer.updateFPS();
-        //window.update();
     }
 
     protected void cleanup() {
         gameContainer.cleanup();
+        renderer.cleanup();
         window.cleanup();
     }
 
@@ -148,5 +146,9 @@ public class GameEngine implements Runnable {
         public int getUps() {
             return ups;
         }
+    }
+
+    public static boolean isDefaultContext() {
+        return GL.getCapabilities().OpenGL32;
     }
 }

@@ -5,8 +5,8 @@ import static org.lwjgl.opengl.GL30C.*;
 public class VertexArrayObject {
     private final int objectId;
 
-    public VertexArrayObject(int objectId) {
-        this.objectId = objectId;
+    public VertexArrayObject() {
+        this.objectId = glGenVertexArrays();
     }
 
     public void bind() {
