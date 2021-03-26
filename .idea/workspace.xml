@@ -1,7 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="5eb52ba6-9f6a-4829-9b87-1d69b3f389f7" name="Default Changelist" comment="" />
+    <list default="true" id="5eb52ba6-9f6a-4829-9b87-1d69b3f389f7" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/Wolfaton/src/com/Wolfaton/game/Shader.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Wolfaton/src/com/Wolfaton/game/VertexArrayObject.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Wolfaton/src/com/Wolfaton/game/VertexBufferObject.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Wolfaton/src/com/Wolfaton/game/GameEngine.java" beforeDir="false" afterPath="$PROJECT_DIR$/Wolfaton/src/com/Wolfaton/game/GameEngine.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Wolfaton/src/com/Wolfaton/game/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/Wolfaton/src/com/Wolfaton/game/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Wolfaton/src/com/Wolfaton/game/Renderer.java" beforeDir="false" afterPath="$PROJECT_DIR$/Wolfaton/src/com/Wolfaton/game/Renderer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Wolfaton/src/com/Wolfaton/game/ShaderObject.java" beforeDir="false" afterPath="$PROJECT_DIR$/Wolfaton/src/com/Wolfaton/game/ShaderProgram.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Wolfaton/src/com/Wolfaton/game/Window.java" beforeDir="false" afterPath="$PROJECT_DIR$/Wolfaton/src/com/Wolfaton/game/Window.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Wolfaton/src/com/Wolfaton/game/Wolfaton.java" beforeDir="false" afterPath="$PROJECT_DIR$/Wolfaton/src/com/Wolfaton/game/World.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -79,10 +90,14 @@
       <screen x="0" y="0" width="1366" height="768" />
     </state>
     <state x="445" y="185" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1366.768@0.0.1366.768" timestamp="1616531144420" />
-    <state x="488" y="92" key="#com.intellij.ide.util.MemberChooser" timestamp="1616533097807">
+    <state x="488" y="92" key="#com.intellij.ide.util.MemberChooser" timestamp="1616705006111">
       <screen x="0" y="0" width="1366" height="768" />
     </state>
-    <state x="488" y="92" key="#com.intellij.ide.util.MemberChooser/0.0.1366.768@0.0.1366.768" timestamp="1616533097807" />
+    <state x="488" y="92" key="#com.intellij.ide.util.MemberChooser/0.0.1366.768@0.0.1366.768" timestamp="1616705006111" />
+    <state x="371" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1616691032969">
+      <screen x="0" y="0" width="1366" height="768" />
+    </state>
+    <state x="371" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1366.768@0.0.1366.768" timestamp="1616691032969" />
     <state x="441" y="253" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1" timestamp="1616531324485">
       <screen x="0" y="0" width="1366" height="768" />
     </state>

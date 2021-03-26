@@ -1,28 +1,22 @@
 package com.Wolfaton.game;
 
-import org.lwjgl.glfw.GLFWErrorCallback;
-import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
-import org.lwjgl.system.MemoryStack;
-
-import java.nio.IntBuffer;
 
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.glfw.GLFW.glfwShowWindow;
-import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
-import static org.lwjgl.system.MemoryStack.stackPush;
-import static org.lwjgl.system.MemoryUtil.NULL;
+import static org.lwjgl.opengl.GL30C.*;
 
 public class GameEngine implements Runnable {
     private Window window;
     private final Thread gameLoopThread;
     private final GameContainerInterface gameContainer;
+    private Timer timer;
 
     public GameEngine(String windowTitle, int width, int height, boolean vsSync, GameContainerInterface gameContainer) throws Exception {
         gameLoopThread = new Thread(this, "GAME_LOOP_THREAD");
         window = new Window(windowTitle, width, height, vsSync);
         this.gameContainer = gameContainer;
+        timer = new Timer();
+        init();
     }
 
     public void start() {
@@ -30,7 +24,7 @@ public class GameEngine implements Runnable {
     }
 
     private void init() {
-
+        timer.init();
     }
 
     private void gameLoop() {
@@ -43,17 +37,20 @@ public class GameEngine implements Runnable {
 
         // Set the clear color
         glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
-
         // Run the rendering loop until the user has attempted to close
         // the window or has pressed the ESCAPE key.
         while (!glfwWindowShouldClose(window.getWindowHandle())) {
+            float delta = timer.getDelta();
             this.clear(); // clear the framebuffer
 
             glfwSwapBuffers(window.getWindowHandle()); // swap the color buffers
-
+            input();
+            update(delta);
+            render();
             // Poll for window events. The key callback above will only be
             // invoked during this call.
             glfwPollEvents();
+            timer.update();
         }
     }
 
@@ -67,15 +64,18 @@ public class GameEngine implements Runnable {
 
     protected void update(float interval) {
         gameContainer.update(interval);
+        timer.updateUPS();
     }
 
     protected void render() {
         gameContainer.render(window);
+        timer.updateFPS();
         //window.update();
     }
 
     protected void cleanup() {
         gameContainer.cleanup();
+        window.cleanup();
     }
 
     @Override
@@ -87,6 +87,66 @@ public class GameEngine implements Runnable {
             excp.printStackTrace();
         } finally {
             cleanup();
+        }
+    }
+
+    public Timer getTimer() {
+        return timer;
+    }
+
+    public class Timer {
+        private int fps;
+        private int fpsCount;
+        private int ups;
+        private int upsCount;
+        private double lastLoopTime;
+        private float timer;
+
+        public void init() {
+            lastLoopTime = getTime();
+        }
+
+        public float getDelta() {
+            double time = getTime();
+            float delta = (float) (time - lastLoopTime);
+            lastLoopTime = time;
+            timer += delta;
+            return delta;
+        }
+
+        public void update() {
+            if (timer > 1f) {
+                fps = fpsCount;
+                fpsCount = 0;
+
+                ups = upsCount;
+                upsCount = 0;
+                timer -= 1f;
+            }
+        }
+
+        public void updateFPS() {
+            fpsCount++;
+        }
+
+        public void updateUPS() {
+            upsCount++;
+        }
+
+        public double getTime() {
+            return glfwGetTime();
+        }
+
+        public double getLastLoopTime() {
+            return lastLoopTime;
+        }
+
+        public int getFps() {
+            return fps;
+        }
+
+        public int getUps() {
+            return ups;
         }
     }
 }

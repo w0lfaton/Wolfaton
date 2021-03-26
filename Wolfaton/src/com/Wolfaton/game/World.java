@@ -1,9 +1,11 @@
 package com.Wolfaton.game;
 
-public class Wolfaton implements GameContainerInterface {
+import static org.lwjgl.opengl.GL30C.*;
+
+public class World implements GameContainerInterface {
     private final Renderer renderer;
 
-    public Wolfaton() {
+    public World() {
         renderer = new Renderer();
     }
 

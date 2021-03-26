@@ -5,7 +5,7 @@ public class Main {
     public static void main(String[] args) {
         try {
             boolean vSync = true;
-            GameContainerInterface gameContainer = new Wolfaton();
+            GameContainerInterface gameContainer = new World();
             GameEngine gameEng = new GameEngine("Wolfaton",
                     600, 480, vSync, gameContainer);
             gameEng.start();

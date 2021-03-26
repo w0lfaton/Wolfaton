@@ -1,13 +1,14 @@
 package com.Wolfaton.game;
 
 import org.lwjgl.glfw.GLFWErrorCallback;
+import org.lwjgl.glfw.GLFWKeyCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.system.MemoryStack;
 
 import java.nio.IntBuffer;
 
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL30C.*;
 import static org.lwjgl.system.MemoryUtil.*;
 import static org.lwjgl.system.MemoryStack.*;
 
@@ -18,6 +19,7 @@ public class Window {
     private int height;
     private boolean vSync;
     private boolean isResized;
+    private static GLFWErrorCallback errorCallback = GLFWErrorCallback.createPrint(System.err);
     public Window(String title, int width, int height, boolean vSync) {
         this.title = title;
         this.width = width;
@@ -35,9 +37,9 @@ public class Window {
     }
 
     private void init() {
-        // Setup an error callback. The default implementation
+        // Setup an error callback. Current implementation
         // will print the error message in System.err.
-        GLFWErrorCallback.createPrint(System.err).set();
+        glfwSetErrorCallback(errorCallback);
 
         // Initialize GLFW. Most GLFW functions will not work before doing this - good to know, aye.
         if (!glfwInit()) throw new IllegalStateException("Unable to initialize GLFW");
@@ -57,9 +59,7 @@ public class Window {
             Window.this.setResized(true);
         });
 
-        glfwSetKeyCallback(windowHandle, (window, key, scancode, action, mods) -> {
-            if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE) glfwSetWindowShouldClose(window, true); // We will detect this in the rendering loop
-        });
+        glfwSetKeyCallback(windowHandle, keyCallback);
 
         // Get the thread stack and push a new frame
         try (MemoryStack stack = stackPush()) {
@@ -90,5 +90,21 @@ public class Window {
 
         // Make the window visible
         glfwShowWindow(windowHandle);
+    }
+
+    private GLFWKeyCallback keyCallback = new GLFWKeyCallback() {
+        @Override
+        public void invoke(long window, int key, int scancode, int action, int mods) {
+            if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
+                glfwSetWindowShouldClose(window, true);
+            }
+        }
+    };
+
+    public void cleanup() {
+        glfwDestroyWindow(windowHandle);
+        keyCallback.free();
+        glfwTerminate();
+        errorCallback.free();
     }
 }
